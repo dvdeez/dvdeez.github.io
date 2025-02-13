@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Dosis:800|Lobster|Pacifico">
+    <title>Happy Valentines Day <3 </title>
+
+    <style>
+        body {
+            width: 100vw;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        #canvas {
+            background: #ff93a6;
+            position: absolute;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .o_heart {
+            fill: #FFB3C3;
+        }
+
+        .i_heart {
+            fill: #FCE3E9;
+        }
+
+        .text {
+            z-index: 1000;
+            position: absolute;
+            width: 40vw;
+            font-size: 5vw;
+            letter-spacing: 3px;
+            font-family: 'Dosis', sans-serif;
+            font-weight: bold;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            color: #FFB3C3;
+            background: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            border: 3px solid #FCE3E9;
+            box-shadow: 0 5px 6px rgba(0, 0, 0, 0.1);
+        } 
+
+        .button {
+            font-size: 0.5em;
+            margin: 10px;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap:30%;
+            margin-top: 20px;
+            position: relative;
+        }
+
+        #yes-button {
+            background-color: #FFB3C3;
+            color: white;
+            position: relative;
+        }
+
+        #no-button {
+            background-color: #FCE3E9;
+            color: black;
+            position: relative;
+        }
+    </style>
+
+    
+</head>
+
+<body>
+    <svg xmlns:xlink="http://www.w3.org/1999/xlink" id="canvas">
+        <defs>
+            <g id="heart">
+                <g>
+                    <path class="o_heart" d="M102.7,12.4L102.7,12.4C90.5,0.2,71.3-1,57.7,8.8c-13.6-9.9-32.9-8.7-45.2,3.5l0,0
+                                     c-13.6,13.6-13.6,35.8,0,49.3L48.8,98c1.8,1.8,4,2.9,6.3,3.3c3.9,0.9,8.2-0.1,11.2-3.2l36.3-36.3C116.2,48.2,116.2,26,102.7,12.4
+                                     z"/>
+                </g>
+                <g>
+                    <path class="i_heart" d="M74.7,34L74.7,34c-4.6-4.6-11.9-5.1-17.1-1.4c-5.2-3.8-12.5-3.3-17.1,1.3c-5.1,5.1-5.1,13.6,0,18.7
+                                     l13.8,13.8c0.7,0.7,1.5,1.1,2.4,1.3c1.5,0.3,3.1-0.1,4.2-1.2l13.8-13.8C79.9,47.6,79.9,39.2,74.7,34z"/>
+                </g>
+            </g>
+        </defs>
+    </svg>
+    <div class="text">Be My Valentine?
+        <div class="button-container">
+            <a href="letter.html">
+                <button class="button" id="yes-button" >Yes</button>
+            </a>
+            <button class="button" id="no-button">No</button>
+        </div>
+    </div>
+
+    <script>
+        var paper = d3.select("#canvas");
+        var wsvg = $("#canvas").width();
+        var hsvg = $("#canvas").height();
+        var d = Math.ceil((Math.floor(Math.random() * 700) + 100) / 10) * 10;
+        var count = 0;
+
+        function rNumTime() {
+            d = Math.ceil((Math.floor(Math.random() * 600) + 100) / 10) * 10;
+        }
+
+        setInterval(function () {
+            count++;
+            var x = Math.floor(Math.random() * (wsvg - 100)) + 50;
+            var y = Math.floor(Math.random() * (hsvg - 100)) + 50;
+            var b = paper.append("use").attr("xlink:href", "#heart").attr("id", "h" + count).attr("transform", "translate(" + x + ", " + y + ")");
+            setTimeLine();
+            rNumTime();
+        }, d);
+
+        function setTimeLine() {
+            var s = (Math.random() * (0.7 - 0.2) + 0.5).toFixed(1);
+            var heart = $("#h" + count);
+            var tl = gsap.timeline({ repeat: 1, yoyo: true });
+            tl.from(heart, { duration: 0.7, scale: 0, transformOrigin: "50% 50%" })
+              .to(heart, { duration: 0.7, scale: s, transformOrigin: "50% 50%" })
+              .to(heart, { duration: 0.3, scale: 1, transformOrigin: "50% 50%", opacity: 0 });
+            setTimeout(function () {
+                remove(heart);
+            }, 1700);
+        }
+
+        function remove(h) {
+            h.remove();
+        }
+
+        $(window).on("resize", function () {
+            wsvg = $("#canvas").width();
+            hsvg = $("#canvas").height();
+        });
+
+        var b = document.getElementById("no-button");
+        var canvas = document.getElementById("canvas");
+    
+        b.addEventListener("mouseover", moveButton);
+        
+        function moveButton() {
+            var canvasRect = canvas.getBoundingClientRect();
+            var maxX = canvasRect.width;
+            var maxY = canvasRect.height;
+            
+            var i = Math.floor(Math.random() * maxX) + canvasRect.left;
+            var j = Math.floor(Math.random() * maxY) + canvasRect.top;
+            
+            b.style.left = i + "px";
+            b.style.top = j + "px";
+        }
+    </script>
+</body>
+</html>
