@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pass Page</title>
+    <style>
+        body {
+            background-color: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        input[type="text"] {
+            padding: 10px;
+            font-size: 16px;
+            position: relative;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            vertical-align: middle;
+        }
+
+        #countdown {
+            color: white;
+            font-size: 24px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        #passInput {
+            display: flex;
+            position: relative;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div id="countdown"></div>
+        
+        <input type="text" id="passInput" placeholder="Enter passphrase">
+    </div>
+    
+    
+    <script>
+        const correctHash = "e5173f329b97a761b031665e50bae6018a9d44f28ae18bca5a6cbeeee5d863bf";
+
+        async function hashInput(input) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(input);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+        
+        function isValentinesDay() {
+            const now = new Date();
+            return now.getMonth() === 1 && now.getDate() === 14;
+        }
+        
+        document.getElementById('passInput').addEventListener('keypress', async function(event) {
+            if (event.key === 'Enter') {
+                const input = event.target.value.trim(); // Trim whitespace
+                const hashedInput = await hashInput(input);
+
+                console.log("User Input Hash:", hashedInput); // Debugging log
+
+                if (hashedInput === correctHash && isValentinesDay()) {
+                    console.log("Passphrase correct! Redirecting...");
+                    window.location.href = 'home.html'; // Redirect on success
+                } else {
+                    console.log("Incorrect passphrase!");
+                }
+            }
+        });
+
+        function updateCountdown() {
+            const now = new Date();
+            const nextValentine = new Date(2025, 1, 14, 0, 0, 0); // February 14th, 2025 at midnight
+            if (now > nextValentine) {
+                document.getElementById('countdown').innerText = '0d 0h 0m 0s';
+                return;
+            }
+            const diff = nextValentine - now;
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+            document.getElementById('countdown').innerText = 
+                `${days}d ${hours}h ${minutes}m ${seconds}s`;
+
+            if (diff > 0) {
+                setTimeout(updateCountdown, 1000);
+            }
+        }
+
+        updateCountdown();
+    </script>
+</body>
+</html>
