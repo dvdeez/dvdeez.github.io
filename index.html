@@ -72,6 +72,8 @@
                 const hashedInput = await hashInput(input);
 
                 console.log("User Input Hash:", hashedInput); // Debugging log
+                console.log("Current Date:", new Date());
+                console.log("Is After Valentine's Day:", isAfterValentinesDay());
 
                 if (hashedInput === correctHash && isAfterValentinesDay() {
                     console.log("Passphrase correct! Redirecting...");
