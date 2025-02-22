@@ -60,10 +60,9 @@
             return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
         }
         
-        function isAfterValentinesDay() {
+        function isValentinesDay() {
             const now = new Date();
-            const valentinesDay = new Date(now.getFullYear(), 1, 14); // February 14th of the current year
-            return now >= valentinesDay;
+            return now.getMonth() >= 1 && now.getDate() >= 14;
         }
         
         document.getElementById('passInput').addEventListener('keypress', async function(event) {
@@ -72,10 +71,8 @@
                 const hashedInput = await hashInput(input);
 
                 console.log("User Input Hash:", hashedInput); // Debugging log
-                console.log("Current Date:", new Date());
-                console.log("Is After Valentine's Day:", isAfterValentinesDay());
 
-                if (hashedInput === correctHash && isAfterValentinesDay()) {
+                if (hashedInput === correctHash && isValentinesDay()) {
                     console.log("Passphrase correct! Redirecting...");
                     window.location.href = 'home.html'; // Redirect on success
                 } else {
